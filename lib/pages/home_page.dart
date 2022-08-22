@@ -1,3 +1,4 @@
+import 'package:chat/models/user_model.dart';
 import 'package:flutter/material.dart';
 
 class HomePage extends StatefulWidget {
@@ -10,6 +11,8 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
+    UserModel arguments =
+        ModalRoute.of(context)?.settings.arguments as UserModel;
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 207, 216, 2020),
       body: Column(
@@ -24,17 +27,19 @@ class _HomePageState extends State<HomePage> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
-                    CircleAvatar(
-                      backgroundColor: Colors.white,
-                      child: const Text('R'),
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(90),
+                      child: Image.network(arguments.image, height: 40),
                     ),
                     Text(
-                      'Rafael Almeida Soares',
+                      arguments.name,
                       style: TextStyle(fontSize: 20),
                     ),
                   ],
                 ),
-                const SizedBox(height: 80,),
+                const SizedBox(
+                  height: 80,
+                ),
                 TextField(
                   textInputAction: TextInputAction.search,
                   decoration: InputDecoration(
@@ -81,9 +86,9 @@ class _HomePageState extends State<HomePage> {
                       children: [
                         ElevatedButton(
                           style: ButtonStyle(
-                            padding: MaterialStateProperty.all<EdgeInsetsGeometry>(
-                              const EdgeInsets.all(8)
-                            ),
+                            padding:
+                                MaterialStateProperty.all<EdgeInsetsGeometry>(
+                                    const EdgeInsets.all(8)),
                             backgroundColor: MaterialStateProperty.all(
                                 const Color.fromARGB(255, 207, 216, 2020)),
                           ),
@@ -92,17 +97,18 @@ class _HomePageState extends State<HomePage> {
                               mainAxisAlignment: MainAxisAlignment.spaceAround,
                               children: [
                                 CircleAvatar(
-                            backgroundColor: Colors.white,
-                            child: const Text('G1'),
-                          ),
-                          Text(
-                            'Grupo 1',
-                            style: TextStyle(fontSize: 20),
-                          ),
+                                  backgroundColor: Colors.white,
+                                  child: const Text('G1'),
+                                ),
+                                Text(
+                                  'Grupo 1',
+                                  style: TextStyle(fontSize: 20),
+                                ),
                               ]),
                         ),
-                        const SizedBox
-                        (height: 10,)
+                        const SizedBox(
+                          height: 10,
+                        )
                       ],
                     );
                   }),

@@ -1,3 +1,7 @@
+import 'dart:convert';
+
+import 'package:chat/controller/group_controller.dart';
+import 'package:chat/models/group_model.dart';
 import 'package:chat/models/user_model.dart';
 import 'package:flutter/material.dart';
 
@@ -9,113 +13,133 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  GroupController groupController = GroupController();
+  @override
+  void initState() {
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     UserModel arguments =
         ModalRoute.of(context)?.settings.arguments as UserModel;
     return Scaffold(
-      backgroundColor: const Color.fromARGB(255, 207, 216, 2020),
-      body: Column(
-        children: [
-          Container(
-            height: 300,
-            width: double.infinity,
-            color: const Color.fromARGB(255, 207, 216, 2020),
-            child: Container(
-              margin: const EdgeInsets.all(60),
-              child: Column(children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+        body: FutureBuilder(
+            future: groupController.loadData(),
+            builder: (context, snapshot) {
+              return Scaffold(
+                backgroundColor: const Color.fromARGB(255, 207, 216, 2020),
+                body: Column(
                   children: [
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(90),
-                      child: Image.network(arguments.image, height: 40),
+                    Container(
+                      height: 300,
+                      width: double.infinity,
+                      color: const Color.fromARGB(255, 207, 216, 2020),
+                      child: Container(
+                        margin: const EdgeInsets.all(60),
+                        child: Column(children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            children: [
+                              ClipRRect(
+                                borderRadius: BorderRadius.circular(90),
+                                child:
+                                    Image.network(arguments.image, height: 40),
+                              ),
+                              Text(
+                                arguments.name,
+                                style: const TextStyle(fontSize: 20),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(
+                            height: 80,
+                          ),
+                          TextField(
+                            textInputAction: TextInputAction.search,
+                            decoration: InputDecoration(
+                                filled: true,
+                                fillColor: Colors.white,
+                                hintText: 'Pesquisar Grupo',
+                                prefixIcon: IconButton(
+                                  onPressed: () {},
+                                  icon: const Icon(
+                                    Icons.search,
+                                    color: Colors.black,
+                                  ),
+                                ),
+                                suffixIcon: IconButton(
+                                  onPressed: () {},
+                                  icon: const Icon(
+                                    Icons.clear,
+                                    color: Colors.black,
+                                    size: 15,
+                                  ),
+                                ),
+                                enabledBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(30)),
+                                focusedBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(30),
+                                )),
+                          )
+                        ]),
+                      ),
                     ),
-                    Text(
-                      arguments.name,
-                      style: TextStyle(fontSize: 20),
+                    Expanded(
+                      child: Container(
+                        height: MediaQuery.of(context).size.height - 300,
+                        padding: const EdgeInsets.all(50),
+                        decoration: const BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.only(
+                                topLeft: Radius.circular(80),
+                                topRight: Radius.circular(80))),
+                        child: ListView.builder(
+                            itemCount: groupController.groups.length,
+                            itemBuilder: (BuildContext context, int index) {
+                              return Column(
+                                children: [
+                                  ElevatedButton(
+                                    style: ButtonStyle(
+                                      padding: MaterialStateProperty.all<
+                                              EdgeInsetsGeometry>(
+                                          const EdgeInsets.all(8)),
+                                      backgroundColor:
+                                          MaterialStateProperty.all(
+                                              const Color.fromARGB(
+                                                  255, 207, 216, 2020)),
+                                    ),
+                                    onPressed: () {},
+                                    child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          ClipRRect(
+                                            borderRadius:
+                                                BorderRadius.circular(90),
+                                            child: Image.memory(
+                                                const Base64Decoder()
+                                                    .convert(groupController.groups[index].image),
+                                                height: 40),
+                                          ),
+                                          Text(
+                                            groupController.groups[index].group,
+                                            style:
+                                                const TextStyle(fontSize: 20),
+                                          ),
+                                        ]),
+                                  ),
+                                  const SizedBox(
+                                    height: 10,
+                                  )
+                                ],
+                              );
+                            }),
+                      ),
                     ),
                   ],
                 ),
-                const SizedBox(
-                  height: 80,
-                ),
-                TextField(
-                  textInputAction: TextInputAction.search,
-                  decoration: InputDecoration(
-                      filled: true,
-                      fillColor: Colors.white,
-                      hintText: 'Pesquisar Grupo',
-                      prefixIcon: IconButton(
-                        onPressed: () {},
-                        icon: const Icon(
-                          Icons.search,
-                          color: Colors.black,
-                        ),
-                      ),
-                      suffixIcon: IconButton(
-                        onPressed: () {},
-                        icon: const Icon(
-                          Icons.clear,
-                          color: Colors.black,
-                          size: 15,
-                        ),
-                      ),
-                      enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(30)),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(30),
-                      )),
-                )
-              ]),
-            ),
-          ),
-          Expanded(
-            child: Container(
-              height: MediaQuery.of(context).size.height - 300,
-              padding: EdgeInsets.all(50),
-              decoration: const BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(80),
-                      topRight: Radius.circular(80))),
-              child: ListView.builder(
-                  itemCount: 20,
-                  itemBuilder: (BuildContext context, int index) {
-                    return Column(
-                      children: [
-                        ElevatedButton(
-                          style: ButtonStyle(
-                            padding:
-                                MaterialStateProperty.all<EdgeInsetsGeometry>(
-                                    const EdgeInsets.all(8)),
-                            backgroundColor: MaterialStateProperty.all(
-                                const Color.fromARGB(255, 207, 216, 2020)),
-                          ),
-                          onPressed: () {},
-                          child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceAround,
-                              children: [
-                                CircleAvatar(
-                                  backgroundColor: Colors.white,
-                                  child: const Text('G1'),
-                                ),
-                                Text(
-                                  'Grupo 1',
-                                  style: TextStyle(fontSize: 20),
-                                ),
-                              ]),
-                        ),
-                        const SizedBox(
-                          height: 10,
-                        )
-                      ],
-                    );
-                  }),
-            ),
-          ),
-        ],
-      ),
-    );
+              );
+            }));
   }
 }

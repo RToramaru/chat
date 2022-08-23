@@ -1,10 +1,6 @@
-// ignore_for_file: import_of_legacy_library_into_null_safe
-
 import 'package:chat/controller/user_controller.dart';
 import 'package:chat/models/user_model.dart';
 import 'package:flutter/material.dart';
-import 'package:google_sign_in/google_sign_in.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -15,12 +11,12 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
 
-  late UserController controller;
+  late UserController userController;
 
   @override
   void initState() {
     super.initState();
-    controller = UserController(UserModel());
+    userController = UserController(UserModel());
   }
   @override
   Widget build(BuildContext context) {
@@ -78,8 +74,8 @@ class _LoginPageState extends State<LoginPage> {
                         borderRadius: BorderRadius.circular(18.0),
                         side: const BorderSide(color: Colors.black)))),
             onPressed: () async {
-              if(await controller.login()){
-                Navigator.of(context).pushReplacementNamed('/home', arguments: controller.userModel);
+              if(await userController.login()){
+                Navigator.of(context).pushReplacementNamed('/home', arguments: userController.userModel);
               }
             },
             child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [

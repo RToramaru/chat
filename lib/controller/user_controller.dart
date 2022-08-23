@@ -1,5 +1,3 @@
-
-
 import 'package:chat/models/user_model.dart';
 
 class UserController{

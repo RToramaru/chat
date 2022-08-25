@@ -14,6 +14,13 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   GroupController groupController = GroupController();
   TextEditingController controller = TextEditingController();
+  late Future<dynamic> futureController;
+
+  @override
+  void initState() {
+    super.initState();
+    futureController = groupController.loadData();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +28,7 @@ class _HomePageState extends State<HomePage> {
         ModalRoute.of(context)?.settings.arguments as UserModel;
     return Scaffold(
         body: FutureBuilder(
-            future: groupController.loadData(),
+            future: futureController,
             builder: (context, snapshot) {
               return Scaffold(
                 backgroundColor: const Color.fromARGB(255, 207, 216, 2020),
@@ -54,6 +61,21 @@ class _HomePageState extends State<HomePage> {
                           TextField(
                             controller: controller,
                             textInputAction: TextInputAction.search,
+                            onSubmitted: (value) {
+                              setState(() {
+                                groupController.searchData(controller.text);
+                              });
+                            },
+                            onChanged: (value) async{
+                              if (value == '') {
+                                await groupController.loadData();
+                              } else {
+                                await groupController.searchData(controller.text);
+                              }
+                              setState(() {
+                                groupController;
+                              });
+                            },
                             decoration: InputDecoration(
                                 filled: true,
                                 fillColor: Colors.white,
@@ -68,6 +90,10 @@ class _HomePageState extends State<HomePage> {
                                 suffixIcon: IconButton(
                                   onPressed: () {
                                     controller.clear();
+                                    groupController.loadData();
+                                    setState(() {
+                                      groupController;
+                                    });
                                   },
                                   icon: const Icon(
                                     Icons.clear,

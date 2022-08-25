@@ -1,6 +1,8 @@
 import 'dart:convert';
+import 'dart:ffi';
 
 import 'package:chat/controller/chat_controller.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 class ChatPage extends StatefulWidget {
@@ -32,9 +34,17 @@ class _ChatPageState extends State<ChatPage> {
         ),
         backgroundColor: const Color.fromARGB(255, 207, 216, 2020),
       ),
-      body: FutureBuilder(
-          future: chatController.loadData(arguments['groupName']),
-          builder: (context, snapshot) {
+      body: StreamBuilder(
+          stream: chatController.loadData(arguments['groupName']),
+          builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+            if (snapshot.hasData) {
+              int size = snapshot.data?.docs.length as int;
+              chatController.chats.clear();
+              for (int i = 0; i < size; i++) {
+                chatController
+                    .addListChats(snapshot.data?.docs[i].data() as Map);
+              }
+            }
             return Column(
               children: [
                 Expanded(
@@ -48,59 +58,60 @@ class _ChatPageState extends State<ChatPage> {
                               ? Alignment.topLeft
                               : Alignment.topRight,
                           child: Container(
-                              padding: const EdgeInsets.all(15),
-                              child: Column(
-                                children: [
-                                  Container(
-                                    alignment:
-                                        (chatController.chats[index].user ==
-                                                arguments['name'])
-                                            ? Alignment.topLeft
-                                            : Alignment.topRight,
-                                    child: Text(
-                                      chatController.chats[index].user,
-                                      style: const TextStyle(
-                                          fontSize: 10,
-                                          fontWeight: FontWeight.bold),
-                                    ),
+                            padding: const EdgeInsets.all(15),
+                            child: Column(
+                              children: [
+                                Container(
+                                  alignment:
+                                      (chatController.chats[index].user ==
+                                              arguments['name'])
+                                          ? Alignment.topLeft
+                                          : Alignment.topRight,
+                                  child: Text(
+                                    chatController.chats[index].user,
+                                    style: const TextStyle(
+                                        fontSize: 10,
+                                        fontWeight: FontWeight.bold),
                                   ),
-                                  if (chatController.chats[index].type ==
-                                      'image')
-                                    Container(
-                                      alignment:
-                                        (chatController.chats[index].user ==
-                                                arguments['name'])
-                                            ? Alignment.topLeft
-                                            : Alignment.topRight,
-                                      child: Image.memory(
-                                          const Base64Decoder().convert(
-                                              chatController
-                                                  .chats[index].message),
-                                          height: 200),
-                                    )
-                                  else
-                                    Container(
-                                      alignment:
-                                        (chatController.chats[index].user ==
-                                                arguments['name'])
-                                            ? Alignment.topLeft
-                                            : Alignment.topRight,
-                                      child: Text(chatController.chats[index].message, style: TextStyle(fontSize: 25),)),
+                                ),
+                                if (chatController.chats[index].type == 'image')
                                   Container(
                                     alignment:
                                         (chatController.chats[index].user ==
                                                 arguments['name'])
                                             ? Alignment.topLeft
                                             : Alignment.topRight,
-                                    child: Text(
-                                      chatController.chats[index].date,
-                                      style: const TextStyle(fontSize: 8),
-                                    ),
+                                    child: Image.memory(
+                                        const Base64Decoder().convert(
+                                            chatController
+                                                .chats[index].message),
+                                        height: 200),
                                   )
-                                ],
-                              ),
+                                else
+                                  Container(
+                                      alignment:
+                                          (chatController.chats[index].user ==
+                                                  arguments['name'])
+                                              ? Alignment.topLeft
+                                              : Alignment.topRight,
+                                      child: Text(
+                                        chatController.chats[index].message,
+                                        style: const TextStyle(fontSize: 25),
+                                      )),
+                                Container(
+                                  alignment:
+                                      (chatController.chats[index].user ==
+                                              arguments['name'])
+                                          ? Alignment.topLeft
+                                          : Alignment.topRight,
+                                  child: Text(
+                                    chatController.chats[index].date,
+                                    style: const TextStyle(fontSize: 8),
+                                  ),
+                                )
+                              ],
                             ),
-                          
+                          ),
                         );
                       }),
                 ),
@@ -119,9 +130,6 @@ class _ChatPageState extends State<ChatPage> {
                           onPressed: () {
                             chatController.openGallery(
                                 arguments['groupName'], arguments['name']);
-                            setState(() {
-                              chatController;
-                            });
                           },
                           icon: const Icon(
                             Icons.image,
@@ -135,9 +143,6 @@ class _ChatPageState extends State<ChatPage> {
                             chatController.sendData(arguments['groupName'],
                                 chatController.chatModel.toMap());
                             controller.clear();
-                            setState(() {
-                              chatController;
-                            });
                           },
                           icon: const Icon(
                             Icons.send,

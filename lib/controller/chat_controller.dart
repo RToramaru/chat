@@ -11,14 +11,12 @@ class ChatController {
   List<ChatModel> chats = <ChatModel>[];
   ChatModel chatModel = ChatModel();
 
+  addListChats(Map map){
+    chats.add(ChatModel.fromMap(map));
+  }
 
-  loadData(String dataBase) async {
-    chats.clear();
-    QuerySnapshot querySnapshot = await _collection.collection(dataBase).get();
-    final allData = querySnapshot.docs.map((doc) => doc.data()).toList();
-    for (var chat in allData) {
-      chats.add(ChatModel.fromMap(chat as Map));
-    }
+  loadData(String dataBase) {
+    return  _collection.collection(dataBase).snapshots();
   }
 
   sendData(String dataBase, Map<String, dynamic> map) {

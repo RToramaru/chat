@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:chat/controller/group_controller.dart';
-import 'package:chat/models/group_model.dart';
 import 'package:chat/models/user_model.dart';
 import 'package:flutter/material.dart';
 
@@ -14,10 +13,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   GroupController groupController = GroupController();
-  @override
-  void initState() {
-    super.initState();
-  }
+  TextEditingController controller = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -56,6 +52,7 @@ class _HomePageState extends State<HomePage> {
                             height: 80,
                           ),
                           TextField(
+                            controller: controller,
                             textInputAction: TextInputAction.search,
                             decoration: InputDecoration(
                                 filled: true,
@@ -69,7 +66,9 @@ class _HomePageState extends State<HomePage> {
                                   ),
                                 ),
                                 suffixIcon: IconButton(
-                                  onPressed: () {},
+                                  onPressed: () {
+                                    controller.clear();
+                                  },
                                   icon: const Icon(
                                     Icons.clear,
                                     color: Colors.black,
@@ -109,7 +108,16 @@ class _HomePageState extends State<HomePage> {
                                               const Color.fromARGB(
                                                   255, 207, 216, 2020)),
                                     ),
-                                    onPressed: () {},
+                                    onPressed: () {
+                                      Navigator.of(context)
+                                          .pushNamed('/chat', arguments: {
+                                        'name': arguments.name,
+                                        'groupName':
+                                            groupController.groups[index].group,
+                                        'groupImage':
+                                            groupController.groups[index].image,
+                                      });
+                                    },
                                     child: Row(
                                         mainAxisAlignment:
                                             MainAxisAlignment.spaceBetween,
@@ -118,8 +126,9 @@ class _HomePageState extends State<HomePage> {
                                             borderRadius:
                                                 BorderRadius.circular(90),
                                             child: Image.memory(
-                                                const Base64Decoder()
-                                                    .convert(groupController.groups[index].image),
+                                                const Base64Decoder().convert(
+                                                    groupController
+                                                        .groups[index].image),
                                                 height: 40),
                                           ),
                                           Text(

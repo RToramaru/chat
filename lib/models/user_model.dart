@@ -11,9 +11,9 @@ class UserModel {
     try {
       GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
       final GoogleSignInAuthentication googleAuth =
-          await googleUser.authentication;
-      name = googleUser.displayName;
-      image = googleUser.photoUrl;
+          await googleUser!.authentication;
+      name = googleUser.displayName!;
+      image = googleUser.photoUrl!;
       final credential = GoogleAuthProvider.credential(
         accessToken: googleAuth.accessToken,
         idToken: googleAuth.idToken,

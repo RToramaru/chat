@@ -50,7 +50,7 @@ Uma demostração do aplicativo pode ser visto a seguir.
   
   
 
-<center>![](screen/demonstracao.gif)</center>
+![](screen/demonstracao.gif)
 
   
   

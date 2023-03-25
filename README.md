@@ -37,23 +37,6 @@ O projeto segue a arquitetura ``MVC`` (Model, View, Controller). Estando organiz
 
 ```
 
-  
-  
-
-## Demonstração
-
-  
-  
-
-Uma demostração do aplicativo pode ser visto a seguir.
-
-  
-  
-
-![](screen/demonstracao.gif)
-
-  
-  
 
 ## Clone do projeto
 
@@ -148,6 +131,20 @@ Após instalado as dependências é necessário realizar algumas configurações
 6 - Concluída todas essas etapas o projeto ja pode ser executado através do comando ``flutter run``
 
   
+
+## Demonstração
+
+  
+  
+
+Uma demostração do aplicativo pode ser visto a seguir.
+
+  
+  
+![](/screens/1.png)
+![](/screens/2.png)
+![](/screens/3.png)
+![](screens/demonstracao.gif)
   
   
 ## Versão Release
